@@ -1,0 +1,27 @@
+# portwatch rules configuration
+# Each rule maps a list of ports to an action.
+#
+# Actions:
+#   ignore - suppress alerts for these ports (expected traffic)
+#   alert  - emit an alert when these ports are detected open
+
+rules:
+  - name: common-services
+    ports: [22, 80, 443]
+    action: ignore
+    comment: "Standard SSH and web ports"
+
+  - name: databases
+    ports: [3306, 5432, 6379, 27017]
+    action: ignore
+    comment: "Database ports — acceptable on internal hosts"
+
+  - name: dev-servers
+    ports: [3000, 4000, 8080, 8443]
+    action: alert
+    comment: "Development servers should not be exposed in production"
+
+  - name: suspicious
+    ports: [4444, 1337, 31337, 9001]
+    action: alert
+    comment: "Ports commonly associated with backdoors or C2 frameworks"
