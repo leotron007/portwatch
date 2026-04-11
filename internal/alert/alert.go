@@ -28,6 +28,19 @@ type Event struct {
 	RuleName  string
 }
 
+// String returns a human-readable representation of the event.
+func (e Event) String() string {
+	return fmt.Sprintf(
+		"%s [%s] rule=%q port=%d/%s — %s",
+		e.Timestamp.Format(time.RFC3339),
+		e.Level,
+		e.RuleName,
+		e.Port,
+		e.Protocol,
+		e.Message,
+	)
+}
+
 // Notifier sends alert events to a destination.
 type Notifier interface {
 	Notify(e Event) error
@@ -49,15 +62,6 @@ func NewLogNotifier(w io.Writer) *LogNotifier {
 
 // Notify formats and writes the event to the underlying writer.
 func (n *LogNotifier) Notify(e Event) error {
-	_, err := fmt.Fprintf(
-		n.Writer,
-		"%s [%s] rule=%q port=%d/%s — %s\n",
-		e.Timestamp.Format(time.RFC3339),
-		e.Level,
-		e.RuleName,
-		e.Port,
-		e.Protocol,
-		e.Message,
-	)
+	_, err := fmt.Fprintln(n.Writer, e.String())
 	return err
 }
