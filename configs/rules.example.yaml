@@ -25,3 +25,8 @@ rules:
     ports: [4444, 1337, 31337, 9001]
     action: alert
     comment: "Ports commonly associated with backdoors or C2 frameworks"
+
+  - name: remote-access
+    ports: [3389, 5900, 5901]
+    action: alert
+    comment: "RDP and VNC — remote desktop protocols should not be publicly exposed"
