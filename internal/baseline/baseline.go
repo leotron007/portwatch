@@ -66,9 +66,13 @@ func (b *Baseline) Add(port int, addedBy string) error {
 }
 
 // Remove removes port from the baseline and persists the change.
+// It is a no-op if the port is not currently in the baseline.
 func (b *Baseline) Remove(port int) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	if _, ok := b.entries[port]; !ok {
+		return nil
+	}
 	delete(b.entries, port)
 	return b.save()
 }
