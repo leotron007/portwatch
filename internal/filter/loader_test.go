@@ -62,3 +62,19 @@ func TestFromConfig_AllowedPorts(t *testing.T) {
 		t.Error("expected 80 to be excluded by allow-list")
 	}
 }
+
+func TestFromConfig_IgnoredPorts(t *testing.T) {
+	f, err := FromConfig(Config{IgnoredPorts: []int{22, 80, 443}})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if f.Allow(22) {
+		t.Error("expected 22 to be ignored")
+	}
+	if f.Allow(80) {
+		t.Error("expected 80 to be ignored")
+	}
+	if !f.Allow(8080) {
+		t.Error("expected 8080 to be allowed (not in ignored list)")
+	}
+}
