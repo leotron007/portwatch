@@ -49,6 +49,24 @@ func (s *Scanner) Scan(startPort, endPort int) ([]Port, error) {
 	return open, nil
 }
 
+// ScanPorts checks a specific list of ports and returns all open ones.
+func (s *Scanner) ScanPorts(ports []int) ([]Port, error) {
+	var open []Port
+	for _, port := range ports {
+		if port < 1 || port > 65535 {
+			return nil, fmt.Errorf("invalid port number: %d", port)
+		}
+		if s.isOpen(port, "tcp") {
+			open = append(open, Port{
+				Number:   port,
+				Protocol: "tcp",
+				Address:  s.Host,
+			})
+		}
+	}
+	return open, nil
+}
+
 // isOpen attempts a TCP connection to determine if the port is open.
 func (s *Scanner) isOpen(port int, proto string) bool {
 	addr := fmt.Sprintf("%s:%d", s.Host, port)
