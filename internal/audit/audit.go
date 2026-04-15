@@ -52,5 +52,16 @@ func (l *Logger) Log(event string, port int, proto, reason string) error {
 	}
 
 	_, err = fmt.Fprintf(l.out, "%s\n", b)
-	return err
+	if err != nil {
+		return fmt.Errorf("audit: write: %w", err)
+	}
+	return nil
+}
+
+// LogEntry records a pre-built Entry, stamping its Timestamp if zero.
+func (l *Logger) LogEntry(e Entry) error {
+	if e.Timestamp.IsZero() {
+		e.Timestamp = time.Now().UTC()
+	}
+	return l.Log(e.Event, e.Port, e.Proto, e.Reason)
 }
