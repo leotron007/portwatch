@@ -83,3 +83,11 @@ func TestProbePorts_ReturnsAllResults(t *testing.T) {
 		t.Error("second port should be closed")
 	}
 }
+
+func TestProbePorts_EmptyList(t *testing.T) {
+	p, _ := probe.New("127.0.0.1", time.Second)
+	results := p.ProbePorts([]int{})
+	if len(results) != 0 {
+		t.Fatalf("expected 0 results, got %d", len(results))
+	}
+}
