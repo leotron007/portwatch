@@ -71,6 +71,12 @@ func (s *Snapshot) Removed(other *Snapshot) []int {
 	return removed
 }
 
+// Diff returns the ports added and removed when transitioning from s to other.
+// It is a convenience wrapper around Added and Removed.
+func (s *Snapshot) Diff(other *Snapshot) (added, removed []int) {
+	return s.Added(other), s.Removed(other)
+}
+
 func toSet(ports []int) map[int]bool {
 	m := make(map[int]bool, len(ports))
 	for _, p := range ports {
