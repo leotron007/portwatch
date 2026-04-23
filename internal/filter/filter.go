@@ -51,3 +51,19 @@ func (f *Filter) Apply(ports []int) []int {
 	}
 	return out
 }
+
+// Diff returns ports that are in current but not in previous, filtered by Allow.
+// It is useful for detecting newly opened ports between two consecutive scans.
+func (f *Filter) Diff(previous, current []int) []int {
+	prev := make(map[int]struct{}, len(previous))
+	for _, p := range previous {
+		prev[p] = struct{}{}
+	}
+	out := make([]int, 0)
+	for _, p := range current {
+		if _, exists := prev[p]; !exists && f.Allow(p) {
+			out = append(out, p)
+		}
+	}
+	return out
+}
